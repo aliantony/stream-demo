@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: demo-consumer-application
+  cloud:
+    # Spring Cloud Stream \u914D\u7F6E\u9879\uFF0C\u5BF9\u5E94 BindingServiceProperties \u7C7B
+    stream:
+      # Binder \u914D\u7F6E\u9879\uFF0C\u5BF9\u5E94 BinderProperties Map
+      #      binders:
+      # Binding \u914D\u7F6E\u9879\uFF0C\u5BF9\u5E94 BindingProperties Map
+      bindings:
+        input-channel:
+          destination: my_output # \u76EE\u7684\u5730\u3002\u8FD9\u91CC\u4F7F\u7528 Kafka Topic
+          content-type: application/json # \u5185\u5BB9\u683C\u5F0F\u3002\u8FD9\u91CC\u4F7F\u7528 JSON
+          group: my-consumer-group # \u6D88\u8D39\u8005\u5206\u7EC4\uFF0C\u4E0D\u6307\u5B9A\u5219\u968F\u673A\u7684\u547D\u540D\u6D88\u8D39\u8005\u5206\u7EC4\uFF0C\u5B9E\u73B0\u5E7F\u64AD\u6D88\u8D39
+          # Consumer \u914D\u7F6E\u9879\uFF0C\u5BF9\u5E94 ConsumerProperties \u7C7B
+          consumer:
+            max-attempts: 3 # \u91CD\u8BD5\u6B21\u6570\uFF0C\u9ED8\u8BA4\u4E3A 3 \u6B21\uFF08\u5305\u62EC\u7B2C\u4E00\u6B21\u6B63\u5E38\u6D88\u8D39\uFF09\u30021\u7981\u7528\u91CD\u8BD5
+            back-off-initial-interval: 3000 # \u91CD\u8BD5\u95F4\u9694\u7684\u521D\u59CB\u503C\uFF0C\u5355\u4F4D\u6BEB\u79D2\uFF0C\u9ED8\u8BA4\u4E3A 1000
+            back-off-multiplier: 2.0 # \u91CD\u8BD5\u95F4\u9694\u7684\u9012\u4E58\u7CFB\u6570\uFF0C\u9ED8\u8BA4\u4E3A 2.0
+            back-off-max-interval: 10000 # \u91CD\u8BD5\u95F4\u9694\u7684\u6700\u5927\u503C\uFF0C\u5355\u4F4D\u6BEB\u79D2\uFF0C\u9ED8\u8BA4\u4E3A 10000
+      # Spring Cloud Stream Kafka \u914D\u7F6E\u9879
+      kafka:
+        # Kafka Binder \u914D\u7F6E\u9879\uFF0C\u5BF9\u5E94 KafkaBinderConfigurationProperties \u7C7B
+        binder:
+          brokers: 10.240.50.116:9092 # \u6307\u5B9A Kafka Broker \u5730\u5740\uFF0C\u53EF\u4EE5\u8BBE\u7F6E\u591A\u4E2A\uFF0C\u4EE5\u9017\u53F7\u5206\u9694
+        bindings:
+          input-channel:
+            # Kafka Consumer \u914D\u7F6E\u9879\uFF0C\u5BF9\u5E94 KafkaConsumerProperties \u7C7B
+            consumer:
+              enable-dlq: true # \u662F\u5426\u5F00\u542F\u6B7B\u4FE1\u961F\u5217\uFF0C\u9ED8\u8BA4\u4E3A false \u5173\u95ED
+              dlq-name: # \u6B7B\u4FE1\u961F\u5217\u540D\uFF0C\u9ED8\u8BA4\u4E3A `errors.{topicName}.{consumerGroup}`
+
+server:
+  port: ${random.int[10000,19999]} # \u968F\u673A\u7AEF\u53E3\uFF0C\u65B9\u4FBF\u542F\u52A8\u591A\u4E2A\u6D88\u8D39\u8005
