@@ -9,7 +9,7 @@ spring:
       # Binding 配置项，对应 BindingProperties Map
       bindings:
         input-channel:
-          destination: my_output # 目的地。这里使用 Kafka Topic
+          destination: my_output1 # 目的地。这里使用 Kafka Topic
           content-type: application/json # 内容格式。这里使用 JSON
           group: my-consumer-group # 消费者分组，不指定则随机的命名消费者分组，实现广播消费
           # Consumer 配置项，对应 ConsumerProperties 类

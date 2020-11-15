@@ -24,9 +24,11 @@ public class KafkaConsumer {
 
     /**
      * 添加 @Payload 注解，声明需要进行反序列化成 POJO 对象
+     * 消息过滤，消息头等于tudou的才消费
      * @param message
      */
-    @StreamListener(MySinkChannel.INPUT_CHANNEL)
+    //@StreamListener(value = MySinkChannel.INPUT_CHANNEL, condition = "headers['tag'] == 'tudou1'")
+    @StreamListener(value = MySinkChannel.INPUT_CHANNEL)
     public void onMessage(@Payload UserMessage message) {
         logger.info("[onMessage][线程编号:{} 消息内容：{}]", Thread.currentThread().getId(), message);
         // <X> 注意，此处抛出一个 RuntimeException 异常，模拟消费失败

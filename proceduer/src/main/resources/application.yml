@@ -9,8 +9,9 @@ spring:
       # Binding 配置项，对应 BindingProperties Map
       bindings:
         output-channel:
-          destination: my_output # 目的地。这里使用 Kafka Topic
+          destination: my_output1 # 目的地。这里使用 Kafka Topic
           content-type: application/json # 内容格式。这里使用 JSON
+          partition-key-expression: payload['id'] # 分区 key 表达式。该表达式基于 Spring EL，从消息中获得分区 key。从消息的header获取headers['partitionKey']
       # Spring Cloud Stream Kafka 配置项
       kafka:
         # Kafka Binder 配置项，对应 KafkaBinderConfigurationProperties 类
@@ -18,7 +19,7 @@ spring:
           brokers: 192.168.5.102:9092 # 指定 Kafka Broker 地址，可以设置多个，以逗号分隔
         # Kafka 自定义 Binding 配置项，对应 KafkaBindingProperties Map
         bindings:
-          demo01-output:
+          output-channel:
             # Kafka Producer 配置项，对应 KafkaProducerProperties 类
             producer:
               sync: true # 是否同步发送消息，默认为 false 异步。

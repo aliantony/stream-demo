@@ -27,6 +27,7 @@ public class UserController {
         //UserMessage message = UserMessage.builder().id(new Random().nextInt()).build();
         // <2> 创建 Spring Message 对象
         Message<UserMessage> springMessage = MessageBuilder.withPayload(message)
+                .setHeader("tag", "tudou1")
                 .build();
         // <3> 发送消息
         return senderSource.outputChannel().send(springMessage);
