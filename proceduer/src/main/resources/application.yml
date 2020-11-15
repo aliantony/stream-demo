@@ -17,6 +17,12 @@ spring:
         # Kafka Binder 配置项，对应 KafkaBinderConfigurationProperties 类
         binder:
           brokers: 192.168.5.102:9092 # 指定 Kafka Broker 地址，可以设置多个，以逗号分隔
+          transaction: # 对应 KafkaBinderConfigurationProperties.Transaction 类
+            transaction-id-prefix: demo. # 事务编号前缀
+            producer:
+              configuration:
+                retries: 1 # 发送失败时，重试发送的次数
+                acks: all # 0-不应答。1-leader 应答。all-所有 leader 和 follower 应答。Must set acks to all in order to use the idempotent producer. Otherwise we cannot guarantee idempotence
         # Kafka 自定义 Binding 配置项，对应 KafkaBindingProperties Map
         bindings:
           output-channel:

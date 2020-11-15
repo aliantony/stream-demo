@@ -6,9 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.context.IntegrationContextUtils;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 1、集群模式下一个组中的消费者各消费一个分区，轮流消费
@@ -22,17 +27,31 @@ public class KafkaConsumer {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    private AtomicInteger index = new AtomicInteger();
+
     /**
      * 添加 @Payload 注解，声明需要进行反序列化成 POJO 对象
      * 消息过滤，消息头等于tudou的才消费
      * @param message
      */
     //@StreamListener(value = MySinkChannel.INPUT_CHANNEL, condition = "headers['tag'] == 'tudou1'")
-    @StreamListener(value = MySinkChannel.INPUT_CHANNEL)
+    //@StreamListener(value = MySinkChannel.INPUT_CHANNEL)
     public void onMessage(@Payload UserMessage message) {
         logger.info("[onMessage][线程编号:{} 消息内容：{}]", Thread.currentThread().getId(), message);
         // <X> 注意，此处抛出一个 RuntimeException 异常，模拟消费失败
         //throw new RuntimeException("我就是故意抛出一个异常");
+    }
+
+    @StreamListener(MySinkChannel.INPUT_CHANNEL)
+    public void onMessage(@Payload UserMessage message,
+                          @Header(KafkaHeaders.ACKNOWLEDGMENT) Acknowledgment acknowledgment) {
+        logger.info("[onMessage][线程编号:{} 消息内容：{}]", Thread.currentThread().getId(), message);
+        // 提交消费进度
+//        if (message.getId() % 2 == 1) {
+        //if (index.incrementAndGet() == 1) {
+          //  acknowledgment.acknowledge();
+        //}
+        acknowledgment.acknowledge();
     }
 
     /**
