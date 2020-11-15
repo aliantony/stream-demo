@@ -29,5 +29,18 @@ spring:
             # Kafka Producer 配置项，对应 KafkaProducerProperties 类
             producer:
               sync: true # 是否同步发送消息，默认为 false 异步。
+              batch-timeout: 30000 # 批处理延迟时间上限。这里配置为 30 * 1000 ms 过后，不管是否消息数量是否到达 batch-size 或者消息大小到达 buffer-memory 后，都直接发送一次请求
+              buffer-size: 33554432 # 每次批量发送消息的最大内存
 server:
   port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' # 需要开放的端点。默认值只打开 health 和 info 两个端点。通过设置 * ，可以开放所有端点。
+  endpoint:
+    # Health 端点配置项，对应 HealthProperties 配置类
+    health:
+      enabled: true # 是否开启。默认为 true 开启。
+      show-details: ALWAYS # 何时显示完整的健康信息。默认为 NEVER 都不展示。可选 WHEN_AUTHORIZED 当经过授权的用户；可选 ALWAYS 总是展示。

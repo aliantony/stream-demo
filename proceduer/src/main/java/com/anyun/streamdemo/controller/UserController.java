@@ -56,4 +56,21 @@ public class UserController {
         Thread.sleep(10 * 1000L);
     }
 
+    @ApiOperation(value = "批量发送消息")
+    @GetMapping("/send_batch")
+    public boolean sendBatch() {
+        for (int i = 0; i < 3; i++) {
+            // 创建 Message
+            int id = new Random().nextInt();
+            UserMessage message = UserMessage.builder().id(id).build();
+            // 创建 Spring Message 对象
+            Message<UserMessage> springMessage = MessageBuilder.withPayload(message)
+                    .build();
+            // 发送消息
+            senderSource.outputChannel().send(springMessage);
+            log.info("[send_transaction][发送编号：[{}] 发送成功]", id);
+        }
+        return true;
+    }
+
 }

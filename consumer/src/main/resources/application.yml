@@ -19,11 +19,16 @@ spring:
             back-off-multiplier: 2.0 # 重试间隔的递乘系数，默认为 2.0
             back-off-max-interval: 10000 # 重试间隔的最大值，单位毫秒，默认为 10000
             concurrency: 2 # 每个 Consumer 消费线程数的初始大小，默认为 1，消费者创建两个线程平摊分区
+            batch-mode: true # 是否批量消费默认，默认为 false
       # Spring Cloud Stream Kafka 配置项
       kafka:
         # Kafka Binder 配置项，对应 KafkaBinderConfigurationProperties 类
         binder:
           brokers: 192.168.5.102:9092 # 指定 Kafka Broker 地址，可以设置多个，以逗号分隔
+          configuration:
+            fetch.max.wait.ms: 10000 # poll 一次拉取的阻塞的最大时长，单位：毫秒。这里指的是阻塞拉取需要满足至少 fetch-min-size 大小的消息
+            fetch.min.bytes: 1024 # poll 一次消息拉取的最小数据量，单位：字节
+            max.poll.records: 100 # poll 一次消息拉取的最大数量
         bindings:
           input-channel:
             # Kafka Consumer 配置项，对应 KafkaConsumerProperties 类
